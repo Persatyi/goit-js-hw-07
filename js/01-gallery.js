@@ -33,21 +33,30 @@ function openModal(event) {
     return;
   }
 
-  window.addEventListener("keydown", escCloseModal);
-
   const dataSource = event.target.dataset.source;
 
-  instance = basicLightbox.create(`
+  instance = basicLightbox.create(
+    `
     <img src="${dataSource}" width="800" height="600">
-`);
-
+`,
+    {
+      onClose: removeListener,
+      onShow: createListener,
+    }
+  );
   instance.show();
 }
 
+function createListener() {
+  window.addEventListener("keydown", escCloseModal);
+}
+
+function removeListener(instance) {
+  window.removeEventListener("keydown", escCloseModal);
+}
+
 function escCloseModal(event) {
-  console.log(event);
   if (event.code === "Escape") {
     instance.close();
-    window.removeEventListener("keydown", escCloseModal);
   }
 }
